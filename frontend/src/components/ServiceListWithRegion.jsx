@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { PROVIDER_META, fmt } from '../utils/theme';
 
 const ICONS = {
-  server: '🖥️', database: '🗄️', bucket: '📦', function: '⚡', cdn: '🌐',
-  analytics: '📊', kubernetes: '☸️', run: '🏃', vm: '💻', blob: '🗂️',
-  app: '🌐', default: '☁️',
+  server: 'SRV', database: 'DB', bucket: 'BKT', function: 'FN', cdn: 'CDN',
+  analytics: 'ANL', kubernetes: 'K8S', run: 'RUN', vm: 'VM', blob: 'BLB',
+  app: 'APP', default: 'SVC',
 };
 
 const REGION_DATA = {

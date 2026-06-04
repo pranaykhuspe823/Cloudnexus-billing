@@ -19,9 +19,9 @@ export const COLORS = {
 };
 
 export const PROVIDER_META = {
-  aws:   { label: 'AWS',   emoji: '🟠', color: COLORS.aws,   bg: COLORS.awsBg   },
-  gcp:   { label: 'GCP',   emoji: '🔵', color: COLORS.gcp,   bg: COLORS.gcpBg   },
-  azure: { label: 'Azure', emoji: '🔷', color: COLORS.azure, bg: COLORS.azureBg },
+  aws:   { label: 'AWS',   color: COLORS.aws,   bg: COLORS.awsBg   },
+  gcp:   { label: 'GCP',   color: COLORS.gcp,   bg: COLORS.gcpBg   },
+  azure: { label: 'Azure', color: COLORS.azure, bg: COLORS.azureBg },
 };
 
 export const fmt = {

@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import { fmt, PROVIDER_META, chartDefaults, gridY, noGridX } from '../utils/theme';
+import ProviderLogo from './ProviderLogo';
 
 const PROVIDER_COLORS = { aws: '#FF9900', gcp: '#4285F4', azure: '#008AD7' };
-
-const MODEL_BADGES = [
-  { label: 'Holt-Winters',  icon: '📈', desc: 'Triple exponential smoothing + seasonal decomposition', key: 'holt' },
-  { label: 'LSTM Patterns', icon: '🧠', desc: 'Historical window pattern memory',                       key: 'lstm' },
-  { label: 'XGBoost',       icon: '⚡', desc: 'Gradient-boosted lag/momentum features',                 key: 'xgb'  },
-  { label: 'Claude AI',     icon: '🤖', desc: 'Anthropic Claude AI narrative & driver intelligence',     key: 'claude' },
-];
 
 function ThinkingDots() {
   return <span className="thinking-dots"><span /><span /><span /></span>;
@@ -30,33 +24,9 @@ function RiskBadge({ level }) {
   );
 }
 
-function ModelBadge({ m, active }) {
-  return (
-    <div title={m.desc} style={{
-      display: 'inline-flex', alignItems: 'center', gap: 4,
-      padding: '3px 8px', borderRadius: 20, fontSize: 10, fontWeight: 600,
-      background: active ? '#f0fdf4' : '#f9fafb',
-      border: `1px solid ${active ? '#86efac' : '#e5e7eb'}`,
-      color:  active ? '#15803d' : '#9ca3af',
-    }}>
-      {m.icon} {m.label}
-    </div>
-  );
-}
 
 export default function ForecastPanelV2({ forecast, loading }) {
   const [selectedProvider, setSelectedProvider] = useState('all');
-  const [analysisReady, setAnalysisReady]       = useState(false);
-  const [showAnomalies, setShowAnomalies]       = useState(false);
-  const [showFeatures,  setShowFeatures]        = useState(false);
-
-  useEffect(() => {
-    setAnalysisReady(false);
-    if (!loading && forecast) {
-      const t = setTimeout(() => setAnalysisReady(true), 1400);
-      return () => clearTimeout(t);
-    }
-  }, [forecast, loading, selectedProvider]);
 
   if (!forecast) {
     return (
@@ -72,8 +42,6 @@ export default function ForecastPanelV2({ forecast, loading }) {
   const forecastArr = forecast.forecast_30d   || [];
   const lowerArr    = forecast.lower_band     || [];
   const upperArr    = forecast.upper_band     || [];
-  const anomalies   = forecast.anomalies      || [];
-  const xgbFeats    = forecast.xgb_features   || {};
   const riskLevel   = forecast.risk_level     || 'medium';
   const seasonPeriod = forecast.seasonal_period;
 
@@ -142,16 +110,9 @@ export default function ForecastPanelV2({ forecast, loading }) {
   return (
     <div className="forecast-v2-wrap">
 
-      {/* Model badges */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
-        {MODEL_BADGES.map(m => {
-          const claudeUsed = (forecast.models_used || []).some(u => u.toLowerCase().includes('claude'));
-          const active = m.key === 'claude' ? claudeUsed : true;
-          return <ModelBadge key={m.label} m={m} active={active} />;
-        })}
-        <div style={{ marginLeft: 'auto' }}>
-          <RiskBadge level={riskLevel} />
-        </div>
+      {/* Risk badge */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
+        <RiskBadge level={riskLevel} />
       </div>
 
       {/* Provider tabs — only show providers that have data */}
@@ -167,7 +128,7 @@ export default function ForecastPanelV2({ forecast, loading }) {
             style={selectedProvider === p ? { borderColor: PROVIDER_COLORS[p], color: PROVIDER_COLORS[p], background: `${PROVIDER_COLORS[p]}12` } : {}}
             onClick={() => setSelectedProvider(p)}
           >
-            {PROVIDER_META[p].emoji} {PROVIDER_META[p].label}
+            <ProviderLogo provider={p} size={13} /> {PROVIDER_META[p].label}
           </button>
         ))}
       </div>
@@ -234,12 +195,6 @@ export default function ForecastPanelV2({ forecast, loading }) {
               <div className="fms-val">{seasonPeriod}d cycle</div>
             </div>
           )}
-          <div className="fms-item">
-            <div className="fms-label">Anomalies</div>
-            <div className="fms-val" style={{ color: anomalies.length ? '#ef4444' : '#22c55e' }}>
-              {anomalies.length ? `${anomalies.length} found` : 'None'}
-            </div>
-          </div>
         </div>
       )}
 
@@ -263,122 +218,6 @@ export default function ForecastPanelV2({ forecast, loading }) {
         </div>
       )}
 
-      {/* Anomalies */}
-      {anomalies.length > 0 && (
-        <div style={{ marginTop: 10 }}>
-          <button onClick={() => setShowAnomalies(v => !v)} style={{
-            background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: 6,
-            padding: '4px 10px', fontSize: 11, color: '#c2410c', cursor: 'pointer',
-            fontWeight: 600, marginBottom: showAnomalies ? 8 : 0,
-          }}>
-            ⚠️ {anomalies.length} Anomal{anomalies.length > 1 ? 'ies' : 'y'} Detected {showAnomalies ? '▲' : '▼'}
-          </button>
-          {showAnomalies && anomalies.map((a, i) => (
-            <div key={i} style={{
-              display: 'flex', alignItems: 'center', gap: 8,
-              padding: '5px 8px', borderRadius: 6, marginBottom: 4,
-              background: a.type === 'spike' ? '#fff7ed' : '#eff6ff',
-            }}>
-              <span style={{ fontSize: 14 }}>{a.type === 'spike' ? '⚠️' : '📉'}</span>
-              <span style={{ fontSize: 11, color: '#374151', flex: 1 }}>
-                {a.day}: <strong>${Number(a.value).toLocaleString()}</strong>
-                {' '}— {a.type} (z={a.z_score})
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* XGBoost feature debug */}
-      {Object.keys(xgbFeats).length > 0 && (
-        <div style={{ marginTop: 8 }}>
-          <button onClick={() => setShowFeatures(v => !v)} style={{
-            background: '#f5f3ff', border: '1px solid #ddd6fe', borderRadius: 6,
-            padding: '4px 10px', fontSize: 11, color: '#6d28d9', cursor: 'pointer', fontWeight: 600,
-          }}>
-            ⚡ XGBoost Feature Map {showFeatures ? '▲' : '▼'}
-          </button>
-          {showFeatures && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 6 }}>
-              {Object.entries(xgbFeats).slice(0, 14).map(([k, v]) => (
-                <div key={k} style={{
-                  background: '#faf5ff', border: '1px solid #e9d5ff',
-                  borderRadius: 5, padding: '2px 7px', fontSize: 10, color: '#7c3aed',
-                }}>
-                  <span style={{ color: '#9ca3af' }}>{k}:</span>{' '}
-                  {typeof v === 'number' ? v.toFixed(1) : v}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Provider outlook card */}
-      <div className="forecast-card" style={{ marginTop: 12 }}>
-        <div className="forecast-title">
-          <span className="ai-dot" />
-          Ensemble Forecast — provider outlook
-        </div>
-
-        {forecastProviders.map(p => (
-          <div className="forecast-item" key={p.key}
-            style={selectedProvider === p.key ? { background: `${PROVIDER_COLORS[p.key]}08`, borderRadius: 6 } : {}}
-          >
-            <span className="fi-label">{PROVIDER_META[p.key].label}</span>
-            <span>
-              <span className="fi-val">{fmt.usd(p.forecast)}</span>
-              <span className="fi-trend" style={{ color: p.trendPct > 0 ? '#ef4444' : '#22c55e' }}>
-                {p.trendPct > 0 ? '+' : ''}{p.trendPct?.toFixed(1)}%
-              </span>
-            </span>
-          </div>
-        ))}
-
-        {/* Live key drivers */}
-        {forecast.key_drivers?.length > 0 && (
-          <div style={{ marginTop: 10, borderTop: '1px solid #f3f4f6', paddingTop: 8 }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: '#9ca3af', marginBottom: 6,
-                          textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              Key Cost Drivers
-            </div>
-            {forecast.key_drivers.map((d, i) => (
-              <div key={i} style={{ display: 'flex', justifyContent: 'space-between',
-                                    alignItems: 'center', marginBottom: 4, fontSize: 11 }}>
-                <span style={{ color: '#374151' }}>
-                  <span style={{
-                    width: 7, height: 7, borderRadius: '50%', display: 'inline-block', marginRight: 6,
-                    background: d.severity === 'high' ? '#ef4444' : d.severity === 'medium' ? '#f59e0b' : '#22c55e',
-                  }} />
-                  {d.name}
-                </span>
-                <span style={{ fontWeight: 700, color: d.impact?.startsWith('-') ? '#22c55e' : '#ef4444' }}>
-                  {d.impact}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <div className="forecast-running">
-          {analysisReady ? (
-            <>
-              <span style={{ color: '#22c55e', marginRight: 4 }}>✓</span>
-              Ensemble complete — {forecast.confidence}% confidence
-              {seasonPeriod && (
-                <span style={{ color: '#9ca3af', marginLeft: 8 }}>
-                  · {seasonPeriod}d seasonality
-                </span>
-              )}
-              <span style={{ color: '#9ca3af', marginLeft: 8 }}>
-                · {forecast.models_used?.length || 4} models blended
-              </span>
-            </>
-          ) : (
-            <><ThinkingDots /> Running Holt-Winters + LSTM + XGBoost + Claude AI…</>
-          )}
-        </div>
-      </div>
     </div>
   );
 }

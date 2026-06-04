@@ -3,7 +3,7 @@ import { PROVIDER_META, SEVERITY_COLORS } from '../utils/theme';
 import { api } from '../utils/api';
 import ProviderLogo from './ProviderLogo';
 
-const SEVERITY_ICONS = { critical: '🔴', warning: '🟡', info: '🔵' };
+const SEVERITY_DOT_COLORS = { critical: '#dc2626', warning: '#d97706', info: '#2563eb' };
 
 // ── Daily Email Report Panel ─────────────────────────────────────────────────
 function DailyReportPanel() {
@@ -164,8 +164,11 @@ function DailyReportPanel() {
               Report Includes
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px 16px' }}>
-              {['📊 Daily alert summary', '🔥 Services health status', '☁️ Per-provider breakdown', '🔴 Critical issues list', '📋 Resource health table', '✅ Infrastructure overview'].map(item => (
-                <div key={item} style={{ fontSize: 11, color: 'var(--text2)' }}>{item}</div>
+              {['Daily alert summary', 'Services health status', 'Per-provider breakdown', 'Critical issues list', 'Resource health table', 'Infrastructure overview'].map(item => (
+                <div key={item} style={{ fontSize: 11, color: 'var(--text2)', display:'flex', alignItems:'center', gap:5 }}>
+                  <span style={{ width:4, height:4, borderRadius:'50%', background:'#3b82f6', display:'inline-block', flexShrink:0 }} />
+                  {item}
+                </div>
               ))}
             </div>
           </div>
@@ -177,7 +180,7 @@ function DailyReportPanel() {
               border: `1px solid ${status.type === 'success' ? 'rgba(22,163,74,0.25)' : 'rgba(220,38,38,0.25)'}`,
               color: status.type === 'success' ? '#16a34a' : '#dc2626',
             }}>
-              {status.type === 'success' ? '✅' : '❌'} {status.msg}
+              {status.msg}
             </div>
           )}
 
@@ -188,7 +191,7 @@ function DailyReportPanel() {
                 borderBottom: '1px solid rgba(220,38,38,0.15)',
                 display: 'flex', alignItems: 'center', gap: 8,
               }}>
-                <span style={{ fontSize: 16 }}>🔐</span>
+                <span style={{ fontSize: 16, fontWeight: 700, color: '#dc2626' }}>!</span>
                 <div>
                   <div style={{ fontSize: 12, fontWeight: 700, color: '#dc2626' }}>Zoho SMTP Authentication Failed</div>
                   <div style={{ fontSize: 11, color: '#991b1b', marginTop: 1 }}>SMTP access must be enabled in your Zoho account before sending emails.</div>
@@ -228,7 +231,7 @@ function DailyReportPanel() {
                 opacity: saving || !email ? 0.6 : 1, transition: 'opacity 0.2s',
               }}
             >
-              {saving ? '⏳ Saving...' : scheduled ? '💾 Update Schedule' : '📅 Schedule Daily Report'}
+              {saving ? 'Saving...' : scheduled ? 'Update Schedule' : 'Schedule Daily Report'}
             </button>
             <button
               onClick={handleSendNow}
@@ -240,7 +243,7 @@ function DailyReportPanel() {
                 opacity: sending || (!email && !savedEmail) ? 0.6 : 1, transition: 'opacity 0.2s',
               }}
             >
-              {sending ? '⏳ Sending...' : '📤 Send Test Report Now'}
+              {sending ? 'Sending...' : 'Send Test Report Now'}
             </button>
             {scheduled && (
               <button
@@ -250,7 +253,7 @@ function DailyReportPanel() {
                   background: 'transparent', color: '#dc2626', border: '1px solid rgba(220,38,38,0.3)', marginLeft: 'auto',
                 }}
               >
-                🗑 Remove Schedule
+                Remove Schedule
               </button>
             )}
           </div>
@@ -269,7 +272,7 @@ export default function AlertList({ alerts = [], onAcknowledge, compact }) {
         {alerts.map(a => (
           <div key={a.id} className={`alert-row ${a.acknowledged ? 'acknowledged' : ''}`}>
             <div className={`a-icon a-${a.severity === 'critical' ? 'danger' : a.severity === 'warning' ? 'warning' : 'info'}`}>
-              {SEVERITY_ICONS[a.severity] || '🔵'}
+              <span style={{ display:'block', width:8, height:8, borderRadius:'50%', background: SEVERITY_DOT_COLORS[a.severity] || '#2563eb', margin:'auto' }} />
             </div>
             <div className="a-content">
               <div className="a-title">{a.title}</div>
@@ -291,7 +294,7 @@ export default function AlertList({ alerts = [], onAcknowledge, compact }) {
         return (
           <div key={a.id} className={`alert-row ${a.acknowledged ? 'acknowledged' : ''}`}>
             <div className={`a-icon a-${a.severity === 'critical' ? 'danger' : a.severity === 'warning' ? 'warning' : 'info'}`}>
-              {SEVERITY_ICONS[a.severity] || '🔵'}
+              <span style={{ display:'block', width:8, height:8, borderRadius:'50%', background: SEVERITY_DOT_COLORS[a.severity] || '#2563eb', margin:'auto' }} />
             </div>
             <div className="a-content">
               <div className="a-title">{a.title}</div>

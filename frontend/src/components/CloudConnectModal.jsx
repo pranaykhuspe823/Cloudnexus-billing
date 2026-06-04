@@ -1,19 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import ProviderLogo from './ProviderLogo';
 
 const BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 /* ─── per-provider field schemas ─── */
 const SCHEMAS = {
   aws: {
-    label: 'AWS', emoji: '🟠', color: '#FF9900', bg: '#FFF4E0',
+    label: 'AWS', color: '#FF9900', bg: '#FFF4E0',
     description: 'Connect your Amazon Web Services account to pull live billing, EC2, S3, RDS, and Lambda data.',
     authTypes: [
       {
         id: 'iam',
         label: 'IAM User',
         sublabel: 'Recommended — least privilege access',
-        icon: '👤',
         fields: [
           { id: 'access_key_id',     label: 'Access Key ID',     type: 'text',     placeholder: 'AKIAIOSFODNN7EXAMPLE',  hint: 'Found in IAM → Users → Security credentials' },
           { id: 'secret_access_key', label: 'Secret Access Key', type: 'password', placeholder: '••••••••••••••••••••••••',hint: 'Shown once at creation time' },
@@ -26,7 +26,6 @@ const SCHEMAS = {
         id: 'root',
         label: 'Root Account',
         sublabel: 'Not recommended for production',
-        icon: '🔑',
         fields: [
           { id: 'access_key_id',     label: 'Root Access Key ID',     type: 'text',     placeholder: 'AKIAIOSFODNN7EXAMPLE' },
           { id: 'secret_access_key', label: 'Root Secret Access Key', type: 'password', placeholder: '••••••••••••••••••••••••' },
@@ -38,14 +37,13 @@ const SCHEMAS = {
     ],
   },
   gcp: {
-    label: 'GCP', emoji: '🔵', color: '#4285F4', bg: '#E8F0FE',
+    label: 'GCP', color: '#4285F4', bg: '#E8F0FE',
     description: 'Connect your Google Cloud Platform project to pull live Compute Engine, BigQuery, GKE, and billing data.',
     authTypes: [
       {
         id: 'service_account',
         label: 'Service Account',
         sublabel: 'Recommended — fine-grained IAM roles',
-        icon: '🤖',
         fields: [
           { id: 'project_id',          label: 'Project ID',                type: 'text',     placeholder: 'my-gcp-project-123456' },
           { id: 'service_account_json',label: 'Service Account JSON Key',  type: 'textarea', placeholder: '{\n  "type": "service_account",\n  "project_id": "...",\n  ...\n}', hint: 'Paste full JSON from GCP Console → IAM → Service Accounts → Keys' },
@@ -55,7 +53,6 @@ const SCHEMAS = {
         id: 'root',
         label: 'Owner / Root',
         sublabel: 'User account with Owner role',
-        icon: '🔑',
         fields: [
           { id: 'project_id',          label: 'Project ID',                type: 'text',     placeholder: 'my-gcp-project-123456' },
           { id: 'service_account_json',label: 'Owner Service Account JSON',type: 'textarea', placeholder: '{\n  "type": "service_account",\n  ...\n}' },
@@ -65,14 +62,13 @@ const SCHEMAS = {
     ],
   },
   azure: {
-    label: 'Azure', emoji: '🔷', color: '#008AD7', bg: '#E0F2FF',
+    label: 'Azure', color: '#008AD7', bg: '#E0F2FF',
     description: 'Connect your Microsoft Azure subscription to pull live VM, Blob Storage, AKS, and cost management data.',
     authTypes: [
       {
         id: 'service_principal',
         label: 'Service Principal',
         sublabel: 'Recommended — app-based RBAC access',
-        icon: '🏢',
         fields: [
           { id: 'subscription_id', label: 'Subscription ID', type: 'text',     placeholder: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', hint: 'Azure Portal → Subscriptions' },
           { id: 'tenant_id',       label: 'Tenant ID',       type: 'text',     placeholder: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', hint: 'Azure Portal → Azure Active Directory → Overview' },
@@ -84,7 +80,6 @@ const SCHEMAS = {
         id: 'root',
         label: 'Root / Owner',
         sublabel: 'Full subscription owner credentials',
-        icon: '🔑',
         fields: [
           { id: 'subscription_id', label: 'Subscription ID', type: 'text',     placeholder: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' },
           { id: 'tenant_id',       label: 'Tenant ID',       type: 'text',     placeholder: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' },
@@ -159,7 +154,7 @@ function ProviderConnectCard({ provider, status, onConnect, onDisconnect }) {
       <div className="connect-card-header" onClick={() => !isConnected && setExpanded(v => !v)}>
         <div style={{ display:'flex', alignItems:'center', gap:12 }}>
           <div className="connect-provider-icon" style={{ background: schema.bg }}>
-            {schema.emoji}
+            <ProviderLogo provider={provider} size={22} />
           </div>
           <div>
             <div className="connect-provider-name">{schema.label}</div>
@@ -191,7 +186,6 @@ function ProviderConnectCard({ provider, status, onConnect, onDisconnect }) {
                 style={{ '--accent': schema.color }}
                 onClick={() => { setAuthType(at.id); setFields({}); setError(''); }}
               >
-                <span>{at.icon}</span>
                 <div>
                   <div className="auth-type-label">{at.label}</div>
                   <div className="auth-type-sub">{at.sublabel}</div>
@@ -202,7 +196,7 @@ function ProviderConnectCard({ provider, status, onConnect, onDisconnect }) {
 
           {/* Warning for root */}
           {authSchema.warning && (
-            <div className="cred-warning">⚠️ {authSchema.warning}</div>
+            <div className="cred-warning">{authSchema.warning}</div>
           )}
 
           {/* Fields */}
@@ -248,12 +242,12 @@ function ProviderConnectCard({ provider, status, onConnect, onDisconnect }) {
                     autoComplete="off"
                   />
                 )}
-                {f.hint && <div className="cred-hint">ℹ️ {f.hint}</div>}
+                {f.hint && <div className="cred-hint">{f.hint}</div>}
               </div>
             ))}
           </div>
 
-          {error && <div className="cred-error">❌ {error}</div>}
+          {error && <div className="cred-error">{error}</div>}
 
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginTop:16 }}>
             <label className="show-toggle">
@@ -278,7 +272,10 @@ function ProviderConnectCard({ provider, status, onConnect, onDisconnect }) {
       {/* Connected info */}
       {isConnected && status.services_count && (
         <div className="connected-info">
-          <span>🟢 {status.services_count} services detected</span>
+          <span style={{ display:'inline-flex', alignItems:'center', gap:5 }}>
+            <span style={{ width:8, height:8, borderRadius:'50%', background:'#22c55e', display:'inline-block', flexShrink:0 }} />
+            {status.services_count} services detected
+          </span>
           <span>·</span>
           <span>Region: {status.region || status.location || 'global'}</span>
           <span>·</span>
@@ -369,7 +366,7 @@ export default function CloudConnectModal({ open, onClose, onAllConnected, initi
         {/* Footer */}
         <div className="modal-footer">
           <div className="security-note">
-            🔒 Credentials are sent only to your local backend server and never stored in the browser.
+            Credentials are sent only to your local backend server and never stored in the browser.
           </div>
           <div style={{ display:'flex', gap:10 }}>
             <button className="modal-cancel-btn" onClick={onClose}>
@@ -381,7 +378,7 @@ export default function CloudConnectModal({ open, onClose, onAllConnected, initi
               onClick={handleProceed}
               style={{ opacity: connectedCount === 0 ? 0.45 : 1 }}
             >
-              {allConnected ? '🚀 Launch Real Dashboard' : connectedCount > 0 ? `Continue with ${connectedCount} account${connectedCount>1?'s':''}` : 'Connect at least one account'}
+              {allConnected ? 'Launch Real Dashboard' : connectedCount > 0 ? `Continue with ${connectedCount} account${connectedCount>1?'s':''}` : 'Connect at least one account'}
             </button>
           </div>
         </div>

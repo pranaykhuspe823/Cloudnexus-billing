@@ -18,6 +18,7 @@ import './App.css';
 
 import CrossCloudAnalysis from './components/CrossCloudAnalysis';
 import CostComparisonPanel from './components/CostComparisonPanel';
+import ProviderLogo from './components/ProviderLogo';
 import { fetchMonthlyTrend } from './services/api';
 
 const TABS = ['overview','aws','gcp','azure','analysis','forecast','invoices','alerts'];
@@ -405,8 +406,8 @@ export default function App() {
               const notConnected = providers[p]?._not_connected;
               return (
                 <div className="section-card" key={p}>
-                  <div className="section-title">
-                    {p==='aws'?'🟠':p==='gcp'?'🔵':'🔷'} Top {p.toUpperCase()} services
+                  <div className="section-title" style={{ display:'flex', alignItems:'center', gap:6 }}>
+                    <ProviderLogo provider={p} size={14} /> Top {p.toUpperCase()} services
                     {mode === 'real' && notConnected && (
                       <span style={{ marginLeft:8, fontSize:10, color:'#94a3b8', fontWeight:400 }}>
                         — not connected
@@ -475,7 +476,7 @@ export default function App() {
             </div>
           </div>
           <div className="section-card">
-            <div className="section-title">🟠 All AWS services — by region</div>
+            <div className="section-title" style={{ display:'flex', alignItems:'center', gap:6 }}><ProviderLogo provider="aws" size={14} /> All AWS services — by region</div>
             <ServiceListWithRegion provider="aws" services={providers.aws?.services} />
           </div>
         </>
@@ -526,7 +527,7 @@ export default function App() {
                 </div>
               </div>
               <div className="section-card">
-                <div className="section-title">🔵 All GCP services — by region</div>
+                <div className="section-title" style={{ display:'flex', alignItems:'center', gap:6 }}><ProviderLogo provider="gcp" size={14} /> All GCP services — by region</div>
                 <ServiceListWithRegion provider="gcp" services={providers.gcp?.services} />
               </div>
             </>
@@ -573,7 +574,7 @@ export default function App() {
                 </div>
               </div>
               <div className="section-card">
-                <div className="section-title">🔷 All Azure services — by region</div>
+                <div className="section-title" style={{ display:'flex', alignItems:'center', gap:6 }}><ProviderLogo provider="azure" size={14} /> All Azure services — by region</div>
                 <ServiceListWithRegion provider="azure" services={providers.azure?.services} />
               </div>
             </>

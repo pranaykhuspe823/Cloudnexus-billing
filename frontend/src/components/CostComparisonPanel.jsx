@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { fetchCostComparison } from '../services/api';
 import AllServicesTable from './AllServicesTable';
+import ProviderLogo from './ProviderLogo';
 import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer,
@@ -56,9 +57,9 @@ function Card({ children, style }) {
 // ─── Provider Summary Cards ───────────────────────────────────────────
 function ProviderSummaryCards({ providers, summary }) {
   const PROVIDER_META = {
-    aws:   { icon: '🟠', label: 'AWS' },
-    gcp:   { icon: '🔵', label: 'GCP' },
-    azure: { icon: '🔷', label: 'Azure' },
+    aws:   { label: 'AWS' },
+    gcp:   { label: 'GCP' },
+    azure: { label: 'Azure' },
   };
 
   return (
@@ -72,8 +73,8 @@ function ProviderSummaryCards({ providers, summary }) {
           <Card key={p}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
-                <div style={{ fontSize: 11, fontWeight: 600, color: COLORS[p], textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 4 }}>
-                  {meta.icon} {meta.label}
+                <div style={{ fontSize: 11, fontWeight: 600, color: COLORS[p], textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 4, display:'flex', alignItems:'center', gap:5 }}>
+                  <ProviderLogo provider={p} size={14} /> {meta.label}
                 </div>
                 <div style={{ fontSize: 28, fontWeight: 800, color: '#1a1a2e', lineHeight: 1.1 }}>
                   {fmt(info.mtd)}

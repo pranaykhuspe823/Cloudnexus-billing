@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { fmt } from '../utils/theme';
+import ProviderLogo from './ProviderLogo';
 
 const BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const PROVIDER_COLORS = { aws: '#FF9900', gcp: '#4285F4', azure: '#008AD7' };
 const PROVIDER_LABELS = { aws: 'Amazon Web Services', gcp: 'Google Cloud Platform', azure: 'Microsoft Azure' };
-const PROVIDER_ICONS  = { aws: '🟠', gcp: '🔵', azure: '🔷' };
 
 const STATUS_STYLES = {
   paid:    { bg: 'rgba(34,197,94,0.1)',   color: '#16a34a', border: 'rgba(34,197,94,0.3)'  },
@@ -19,7 +19,7 @@ function generateInvoicePDF(inv, provider) {
   const providerLabel = PROVIDER_LABELS[provider];
   const today = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
   const statusStyle = STATUS_STYLES[inv.status] || STATUS_STYLES.paid;
-  const sourceLabel = inv.source === 'live' ? '✅ Live Data' : '🔲 Mock Data';
+  const sourceLabel = inv.source === 'live' ? 'Live Data' : 'Mock Data';
 
   const itemRows = (inv.items || []).map(item => `
     <tr>
@@ -144,7 +144,7 @@ function generateInvoicePDF(inv, provider) {
       </div>
     </div>
 
-    ${inv.note ? `<div style="margin-top:16px;padding:12px 16px;background:#fffbeb;border:1px solid #fef3c7;border-radius:8px;font-size:11px;color:#92400e;">ℹ️ ${inv.note}</div>` : ''}
+    ${inv.note ? `<div style="margin-top:16px;padding:12px 16px;background:#fffbeb;border:1px solid #fef3c7;border-radius:8px;font-size:11px;color:#92400e;">${inv.note}</div>` : ''}
   </div>
 
   <div class="footer">
@@ -197,7 +197,7 @@ function MonthlyTrendPanel({ mode }) {
       <div style={{ fontSize:11, fontWeight:600, color:'#64748b', textTransform:'uppercase', letterSpacing:1, marginBottom:14 }}>
         Month-wise Spend — All Providers
         <span style={{ marginLeft:8, fontSize:9, background:'#f0f4ff', padding:'2px 8px', borderRadius:10, color:'#94a3b8', fontWeight:400, textTransform:'none' }}>
-          {data.source === 'live' ? '✅ Live' : '🔲 Mock'}
+          {data.source === 'live' ? 'Live' : 'Mock'}
         </span>
       </div>
       <table style={{ width:'100%', borderCollapse:'collapse', fontSize:12 }}>
@@ -273,14 +273,14 @@ export default function InvoicePanel({ mode }) {
             background: view==='invoices' ? '#1a1a2e' : 'transparent',
             color: view==='invoices' ? '#fff' : '#64748b',
             borderColor: view==='invoices' ? '#1a1a2e' : '#e2e8f5' }}
-        >🧾 Invoices</button>
+        >Invoices</button>
         <button
           onClick={() => setView('monthly')}
           style={{ padding:'6px 16px', borderRadius:20, border:'1px solid', fontSize:12, fontWeight:600, cursor:'pointer',
             background: view==='monthly' ? '#4285F4' : 'transparent',
             color: view==='monthly' ? '#fff' : '#64748b',
             borderColor: view==='monthly' ? '#4285F4' : '#e2e8f5' }}
-        >📅 Monthly Breakdown</button>
+        >Monthly Breakdown</button>
       </div>
 
       {view === 'monthly' ? (
@@ -296,7 +296,7 @@ export default function InvoicePanel({ mode }) {
                 style={activeProvider === p ? { borderColor: PROVIDER_COLORS[p], color: PROVIDER_COLORS[p], background: `${PROVIDER_COLORS[p]}10` } : {}}
                 onClick={() => setActiveProvider(p)}
               >
-                <span>{PROVIDER_ICONS[p]}</span>
+                <ProviderLogo provider={p} size={14} />
                 <span>{p.toUpperCase()}</span>
                 {activeProvider === p && (
                   <span className="inv-fetch-badge" style={{ background: dataSource==='live' ? '#16a34a' : '#94a3b8' }}>
@@ -312,7 +312,7 @@ export default function InvoicePanel({ mode }) {
             <div>
               <div className="invoice-provider-name">{PROVIDER_LABELS[activeProvider]}</div>
               <div className="invoice-sub">
-                Billing history · {dataSource === 'live' ? '✅ Live data from cloud API' : '🔲 Mock data — connect credentials for live'} · {invoices.length} invoices
+                Billing history · {dataSource === 'live' ? 'Live data from cloud API' : 'Mock data — connect credentials for live'} · {invoices.length} invoices
               </div>
             </div>
             <div className="invoice-ytd">
@@ -355,7 +355,7 @@ export default function InvoicePanel({ mode }) {
                       </div>
                       {inv.source && (
                         <div style={{ fontSize:9, color:'#94a3b8', background:'#f8faff', padding:'2px 6px', borderRadius:8, border:'1px solid #e2e8f5' }}>
-                          {inv.source === 'live' ? '✅' : '🔲'}
+                          {inv.source === 'live' ? 'Live' : 'Mock'}
                         </div>
                       )}
                       <div className="inv-expand">{isOpen ? '▲' : '▼'}</div>

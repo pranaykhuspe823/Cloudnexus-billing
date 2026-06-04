@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { fetchNamedResources } from '../services/api';
+import ProviderLogo from './ProviderLogo';
 
 const PROVIDER_COLORS = { AWS: '#FF9900', GCP: '#4285F4', AZURE: '#008AD7' };
-const PROVIDER_ICONS  = { AWS: '🟠', GCP: '🔵', AZURE: '🔷' };
 
 function SpecRow({ label, value }) {
   if (!value || value === '—') return null;
@@ -38,7 +38,10 @@ function ResourceRow({ resource, isLive }) {
       >
         {/* Provider */}
         <td style={{ padding: '10px 10px', fontWeight: 700, color: pc, whiteSpace: 'nowrap' }}>
-          {PROVIDER_ICONS[resource.provider]} {resource.provider}
+          <span style={{ display:'inline-flex', alignItems:'center', gap:4 }}>
+            <ProviderLogo provider={resource.provider.toLowerCase()} size={12} />
+            {resource.provider}
+          </span>
         </td>
         {/* Type */}
         <td style={{ padding: '10px 10px', color: '#64748b', fontSize: 11, whiteSpace: 'nowrap' }}>

@@ -1,6 +1,19 @@
 // Professional CloudNexus Report Exporter
 // HTML export + PDF export via print dialog
 
+const PROVIDER_LOGO_SVGS = {
+  aws: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 44"><text x="3" y="30" font-family="'Arial Black','Helvetica Neue',Arial,sans-serif" font-size="28" font-weight="900" fill="#232F3E" letter-spacing="-2">aws</text><path d="M12,38 C28,47 52,47 68,38" fill="none" stroke="#FF9900" stroke-width="3.2" stroke-linecap="round"/><polygon points="64.5,34.5 72,38 64.5,41.5" fill="#FF9900"/></svg>`,
+  gcp: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 86 64"><defs><clipPath id="gc"><path d="M69.5 28.8c-.1-.8-.1-1.6-.1-2.4 0-9.9-8-17.9-17.9-17.9-2.9 0-5.6.7-8 1.9C40.9 6.6 35.6 4 29.7 4 18.7 4 9.8 12.9 9.8 23.9c0 .5 0 1 .1 1.5C4.3 27.2 0 32.7 0 39.2 0 47.8 7 55 15.6 55H71c8 0 14.5-6.5 14.5-14.5 0-7-5-12.9-11.5-13.8z"/></clipPath></defs><rect clip-path="url(#gc)" x="0" y="0" width="86" height="64" fill="#4285F4"/><circle clip-path="url(#gc)" cx="28" cy="20" r="20" fill="#EA4335"/><circle clip-path="url(#gc)" cx="56" cy="14" r="16" fill="#FBBC05"/><circle clip-path="url(#gc)" cx="68" cy="36" r="20" fill="#34A853"/></svg>`,
+  azure: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 62 52"><defs><linearGradient id="al" x1="50%" y1="0%" x2="50%" y2="100%"><stop offset="0%" stop-color="#0078D4"/><stop offset="100%" stop-color="#114A8B"/></linearGradient><linearGradient id="ar" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0090E0"/><stop offset="100%" stop-color="#0078D4"/></linearGradient></defs><path d="M4 48L20 4H32L16 38L4 48Z" fill="url(#al)"/><path d="M20 4H32L58 48H36L28 32L20 4Z" fill="url(#ar)"/></svg>`,
+};
+
+function providerLogoImg(provider, size = 40) {
+  const svg = PROVIDER_LOGO_SVGS[provider];
+  if (!svg) return '';
+  const encoded = encodeURIComponent(svg);
+  return `<img src="data:image/svg+xml;charset=utf-8,${encoded}" width="${size}" height="${Math.round(size * 0.6)}" style="object-fit:contain;display:inline-block;vertical-align:middle;" alt="${provider.toUpperCase()} logo">`;
+}
+
 export function generateReport({ overview, providers, trend, forecast, filter = 'combined' }) {
   const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   const reportId = `CNX-${Date.now().toString(36).toUpperCase()}`;
@@ -115,7 +128,9 @@ export function generateReport({ overview, providers, trend, forecast, filter = 
       <div class="section provider-section" style="border-top: 4px solid ${pm.color};">
         <div class="prov-header" style="background:${pm.bg};">
           <div class="prov-title-block">
-            <div class="prov-dot" style="background:${pm.color};"></div>
+            <div style="width:52px;height:32px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:6px;padding:4px;flex-shrink:0;">
+              ${providerLogoImg(p, 44)}
+            </div>
             <div>
               <div class="prov-name">${pm.label}</div>
               <div class="prov-sub">${pm.short} Cloud Services</div>
@@ -184,14 +199,14 @@ export function generateReport({ overview, providers, trend, forecast, filter = 
 
   const combinedSection = filter === 'combined' ? `
     <div class="section">
-      <div class="sub-heading">📈 30-Day Spend Trend — All Providers</div>
+      <div class="sub-heading">30-Day Spend Trend — All Providers</div>
       <div style="margin:12px 0">${trendSVG(trend)}</div>
       <div class="legend-row">
-        <span class="legend-item"><span class="legend-dot" style="background:#FF9900"></span>AWS</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#4285F4"></span>GCP</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#008AD7"></span>Azure</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#FF9900"></span>${providerLogoImg('aws', 28)} Amazon Web Services</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#4285F4"></span>${providerLogoImg('gcp', 28)} Google Cloud</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#008AD7"></span>${providerLogoImg('azure', 28)} Microsoft Azure</span>
       </div>
-      <div class="sub-heading" style="margin-top:24px">📅 Month-wise Spend Breakdown</div>
+      <div class="sub-heading" style="margin-top:24px">Month-wise Spend Breakdown</div>
       ${monthlyTrendTable(trend)}
     </div>
   ` : '';
@@ -357,9 +372,9 @@ export function generateReport({ overview, providers, trend, forecast, filter = 
       </div>
     </div>
     <div class="cover-provider-pills">
-      ${providerList.includes('aws')   ? '<span class="cover-pill pill-aws">Amazon AWS</span>' : ''}
-      ${providerList.includes('gcp')   ? '<span class="cover-pill pill-gcp">Google Cloud</span>' : ''}
-      ${providerList.includes('azure') ? '<span class="cover-pill pill-azure">Microsoft Azure</span>' : ''}
+      ${providerList.includes('aws')   ? `<span class="cover-pill pill-aws" style="display:inline-flex;align-items:center;gap:6px;">${providerLogoImg('aws', 22)} Amazon Web Services</span>` : ''}
+      ${providerList.includes('gcp')   ? `<span class="cover-pill pill-gcp" style="display:inline-flex;align-items:center;gap:6px;">${providerLogoImg('gcp', 22)} Google Cloud</span>` : ''}
+      ${providerList.includes('azure') ? `<span class="cover-pill pill-azure" style="display:inline-flex;align-items:center;gap:6px;">${providerLogoImg('azure', 22)} Microsoft Azure</span>` : ''}
     </div>
   </div>
 
@@ -389,7 +404,7 @@ export function generateReport({ overview, providers, trend, forecast, filter = 
   ${combinedSection}
 
   <div class="section">
-    <div class="section-heading">📈 AI Cost Forecast — 30-Day Outlook</div>
+    <div class="section-heading">AI Cost Forecast — 30-Day Outlook</div>
     <div class="sub-heading">Provider-Level Forecast</div>
     ${[
       { key: 'aws',   val: forecast ? Math.round((forecast.total_30d || 58204) * 0.443) : 25810, delta: '+7.6%' },
@@ -397,8 +412,8 @@ export function generateReport({ overview, providers, trend, forecast, filter = 
       { key: 'azure', val: forecast ? Math.round((forecast.total_30d || 58204) * 0.229) : 10620, delta: '+9.1%' },
     ].filter(p => providerList.includes(p.key)).map(p => `
       <div class="forecast-row">
-        <div class="forecast-prov">
-          <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${providerMeta[p.key].color};margin-right:8px;vertical-align:middle;"></span>
+        <div class="forecast-prov" style="display:flex;align-items:center;gap:8px;">
+          ${providerLogoImg(p.key, 32)}
           ${providerMeta[p.key].label}
         </div>
         <div>
@@ -412,7 +427,7 @@ export function generateReport({ overview, providers, trend, forecast, filter = 
   ${providerSections}
 
   <div class="disclaimer">
-    ⚠️ <strong>Important Notice:</strong> This report is generated by CloudNexus AI and is based on ${filter !== 'combined' ? providerMeta[filter]?.label + ' billing data' : 'multi-cloud billing data'} available at the time of export. Forecast figures are AI-generated estimates and may differ from actual invoices. Always verify figures against official cloud provider billing dashboards. This document is confidential and intended for internal use only.
+    <strong>Important Notice:</strong> This report is generated by CloudNexus AI and is based on ${filter !== 'combined' ? providerMeta[filter]?.label + ' billing data' : 'multi-cloud billing data'} available at the time of export. Forecast figures are AI-generated estimates and may differ from actual invoices. Always verify figures against official cloud provider billing dashboards. This document is confidential and intended for internal use only.
   </div>
 
   <div class="report-footer">
@@ -437,16 +452,16 @@ export function exportReport({ overview, providers, trend, forecast, filter = 'c
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  const filterName = filter === 'combined' ? 'all-providers' : filter;
-  a.download = `CloudNexus-Report-${filterName}-${new Date().toISOString().split('T')[0]}.html`;
+  const filterLabel = filter === 'combined' ? 'All-Providers' : filter.toUpperCase();
+  a.download = `CloudNexus-Billing-Report-${filterLabel}-${new Date().toISOString().split('T')[0]}.html`;
   a.click();
   URL.revokeObjectURL(url);
 }
 
 export function exportReportAsPDF({ overview, providers, trend, forecast, filter = 'combined' }) {
   const html = generateReport({ overview, providers, trend, forecast, filter });
-  const filterName = filter === 'combined' ? 'all-providers' : filter;
-  const filename = `CloudNexus-Report-${filterName}-${new Date().toISOString().split('T')[0]}`;
+  const filterLabel = filter === 'combined' ? 'All-Providers' : filter.toUpperCase();
+  const filename = `CloudNexus-Billing-Report-${filterLabel}-${new Date().toISOString().split('T')[0]}`;
 
   const printWindow = window.open('', '_blank', 'width=1000,height=800');
   if (!printWindow) {
