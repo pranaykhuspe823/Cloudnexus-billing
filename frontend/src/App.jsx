@@ -19,6 +19,10 @@ import './App.css';
 import CrossCloudAnalysis from './components/CrossCloudAnalysis';
 import CostComparisonPanel from './components/CostComparisonPanel';
 import ProviderLogo from './components/ProviderLogo';
+import {
+  TrendingUp, PieChart, Calendar, BarChart2, Cpu, Scale,
+  Globe, FileText, AlertTriangle, Wifi, Info, BarChart3, Receipt,
+} from 'lucide-react';
 import { fetchMonthlyTrend } from './services/api';
 
 const TABS = ['overview','aws','gcp','azure','analysis','forecast','invoices','alerts'];
@@ -47,11 +51,11 @@ function MonthlyOverviewTable({ mode }) {
 
   if (loading) return (
     <div style={{ padding: '24px 0', textAlign: 'center', color: '#94a3b8', fontSize: 13 }}>
-      ⏳ Fetching month-wise spend from cloud platforms…
+      Fetching month-wise spend from cloud platforms…
     </div>
   );
   if (error) return (
-    <div style={{ padding: 12, color: '#ef4444', fontSize: 13 }}>⚠️ {error}</div>
+    <div style={{ padding: 12, color: '#ef4444', fontSize: 13 }}>{error}</div>
   );
   if (!data) return null;
 
@@ -89,7 +93,7 @@ function MonthlyOverviewTable({ mode }) {
       {isLive && (
         <div style={{ marginBottom: 10, display:'flex', alignItems:'center', gap:6, fontSize:11 }}>
           <span style={{ background:'#22c55e22', color:'#22c55e', padding:'2px 8px', borderRadius:99, fontWeight:700 }}>
-            🔌 LIVE DATA
+            LIVE DATA
           </span>
           <span style={{ color:'#64748b' }}>Fetched directly from your connected cloud platforms</span>
         </div>
@@ -125,7 +129,7 @@ function MonthlyOverviewTable({ mode }) {
         </table>
       </div>
       <div style={{ marginTop: 8, fontSize: 11, color: '#94a3b8', textAlign: 'right' }}>
-        {isLive ? '✅ Real data from cloud APIs' : '⚠️ Connect cloud accounts for live month-wise data'}
+        {isLive ? 'Real data from cloud APIs' : 'Connect cloud accounts for live month-wise data'}
       </div>
     </div>
   );
@@ -146,7 +150,7 @@ function AWSRealMetricCards({ providers, mode }) {
       value: fmt.usd(aws.mtd),
       sub: fmt.pct(aws.delta_pct),
       color: 'var(--color-danger)',
-      detail: isReal ? '🔌 Live from AWS Cost Explorer' : '⚠️ Connect AWS for live data',
+      detail: isReal ? 'Live from AWS Cost Explorer' : 'Connect AWS for live data',
       liveColor: isReal ? '#22c55e' : '#f97316',
     },
     {
@@ -155,9 +159,9 @@ function AWSRealMetricCards({ providers, mode }) {
       sub: 'running instances',
       detail: isReal
         ? (metrics.instances != null
-          ? '🔌 Live from AWS EC2 DescribeInstances'
-          : '⚠️ Requires ec2:DescribeInstances permission')
-        : '⚠️ Connect AWS for real instance count',
+          ? 'Live from AWS EC2 DescribeInstances'
+          : 'Requires ec2:DescribeInstances permission')
+        : 'Connect AWS for real instance count',
       liveColor: isReal && metrics.instances != null ? '#22c55e' : '#f97316',
     },
     {
@@ -165,8 +169,8 @@ function AWSRealMetricCards({ providers, mode }) {
       value: metrics.storage_tb != null ? `${metrics.storage_tb} TB` : '—',
       sub: metrics.storage_cost ? `${fmt.usd(metrics.storage_cost)}/mo` : 'estimated from billing',
       detail: isReal
-        ? '🔌 Live from AWS Cost Explorer (S3 billing)'
-        : '⚠️ Connect AWS for real S3 usage',
+        ? 'Live from AWS Cost Explorer (S3 billing)'
+        : 'Connect AWS for real S3 usage',
       liveColor: isReal && metrics.storage_tb != null ? '#22c55e' : '#f97316',
     },
     {
@@ -175,9 +179,9 @@ function AWSRealMetricCards({ providers, mode }) {
       sub: 'this month',
       detail: isReal
         ? (metrics.lambda_invocations > 0
-          ? '🔌 Live from CloudWatch Lambda/Invocations'
-          : '⚠️ Requires cloudwatch:GetMetricStatistics permission')
-        : '⚠️ Connect AWS for real Lambda data',
+          ? 'Live from CloudWatch Lambda/Invocations'
+          : 'Requires cloudwatch:GetMetricStatistics permission')
+        : 'Connect AWS for real Lambda data',
       liveColor: isReal && metrics.lambda_invocations > 0 ? '#22c55e' : '#f97316',
     },
   ];
@@ -333,7 +337,7 @@ export default function App() {
     <div className="app">
       {mode === 'real' && connectedProviders.length > 0 && (
         <div className="mode-banner">
-          🔌 Real mode — live data from: {connectedProviders.map(p => p.toUpperCase()).join(', ')}.
+          Real mode — live data from: {connectedProviders.map(p => p.toUpperCase()).join(', ')}.
           Unconnected providers show mock data.{' '}
           <span style={{ cursor:'pointer', textDecoration:'underline' }} onClick={() => setModalOpen(true)}>
             Manage connections
@@ -356,14 +360,14 @@ export default function App() {
           <button key={t} className={`tab ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>
             {t === 'alerts'
               ? <>{t} <span className="alert-badge">{managedAlerts.filter(a => !a.acknowledged).length || 0}</span></>
-              : t === 'invoices' ? '🧾 invoices' : t
+              : t
             }
           </button>
         ))}
       </div>
 
       {loading && <div className="loading-bar"><div className="loading-fill" /></div>}
-      {error   && <div className="error-banner">⚠️ {error} — showing cached data</div>}
+      {error   && <div className="error-banner">{error} — showing cached data</div>}
 
       {/* ── OVERVIEW ── */}
       {tab === 'overview' && (
@@ -383,7 +387,7 @@ export default function App() {
           <div className="two-col">
             <div className="section-card">
               <div className="section-title">
-                📈 7-day spend trend —{' '}
+                7-day spend trend —{' '}
                 {mode === 'real' && connectedProviders.length > 0
                   ? connectedProviders.map(p => p.toUpperCase()).join(' + ')
                   : 'all providers'}
@@ -396,7 +400,7 @@ export default function App() {
               </div>
             </div>
             <div className="section-card">
-              <div className="section-title">🍩 Cost distribution</div>
+              <div className="section-title">Cost distribution</div>
               <DistChart overview={overview} activeProviders={activeProviders} />
             </div>
           </div>
@@ -429,13 +433,13 @@ export default function App() {
           {/* ── Month-wise Spend Table — live from cloud APIs ── */}
           <div className="section-card">
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:12 }}>
-              <div className="section-title" style={{ marginBottom:0 }}>📅 Month-wise Spend — All Providers</div>
+              <div className="section-title" style={{ marginBottom:0 }}>Month-wise Spend — All Providers</div>
               {mode !== 'real' && (
                 <button
                   onClick={() => setModalOpen(true)}
                   style={{ fontSize:11, padding:'4px 12px', border:'1px solid #4285F4', borderRadius:6, background:'#f0f7ff', color:'#4285F4', cursor:'pointer', fontWeight:600 }}
                 >
-                  🔌 Connect for Live Data
+                  Connect for Live Data
                 </button>
               )}
             </div>
@@ -452,13 +456,13 @@ export default function App() {
 
           {mode === 'real' && connections.aws?.connected && (
             <div style={{ background:'#f0fdf4', border:'1px solid #86efac', borderRadius:8, padding:'10px 16px', marginBottom:14, fontSize:12, color:'#14532d', display:'flex', alignItems:'center', gap:8 }}>
-              🔌 <strong>Live AWS data</strong> — costs from Cost Explorer, instance counts from EC2, Lambda from CloudWatch.
+              <strong>Live AWS data</strong> — costs from Cost Explorer, instance counts from EC2, Lambda from CloudWatch.
             </div>
           )}
 
           {mode !== 'real' && (
             <div style={{ background:'#fff8ed', border:'1px solid #f97316', borderRadius:8, padding:'10px 16px', marginBottom:14, fontSize:12, color:'#92400e', display:'flex', alignItems:'center', gap:8 }}>
-              ⚠️ Showing estimated data. <strong>Connect your AWS account</strong> to see real EC2 instance counts, actual S3 usage, and live Lambda invocations.
+              Showing estimated data. <strong>Connect your AWS account</strong> to see real EC2 instance counts, actual S3 usage, and live Lambda invocations.
               <button onClick={() => setModalOpen(true)} style={{ marginLeft:'auto', padding:'4px 12px', border:'1px solid #f97316', borderRadius:6, background:'#fff8ed', color:'#f97316', cursor:'pointer', fontWeight:600, fontSize:11 }}>
                 Connect AWS →
               </button>
@@ -467,11 +471,11 @@ export default function App() {
 
           <div className="two-col">
             <div className="section-card">
-              <div className="section-title">📊 AWS — daily cost by service</div>
+              <div className="section-title">AWS — daily cost by service</div>
               <ProviderBarChart data={providers.aws?.daily} color="#FF9900" label="AWS Daily Cost" />
             </div>
             <div className="section-card">
-              <div className="section-title">⚙️ Resource utilization</div>
+              <div className="section-title">Resource utilization</div>
               <UtilizationBars provider="aws" utilization={providers.aws?.utilization} />
             </div>
           </div>
@@ -487,18 +491,18 @@ export default function App() {
         <>
           {mode === 'real' && connections.gcp?.connected && providers.gcp?._is_estimated && (
             <div style={{ background:'#eff6ff', border:'1px solid #93c5fd', borderRadius:8, padding:'10px 16px', marginBottom:14, fontSize:12, color:'#1e40af', display:'flex', alignItems:'center', gap:8 }}>
-              ℹ️ GCP is connected but cost data requires <strong>BigQuery billing export</strong>.
+              GCP is connected but cost data requires <strong>BigQuery billing export</strong>.
               Showing <strong>estimated figures</strong> — enable BigQuery export in your GCP project for live cost data.
             </div>
           )}
           {mode === 'real' && connections.gcp?.connected && !providers.gcp?._is_estimated && (
             <div style={{ background:'#f0fdf4', border:'1px solid #86efac', borderRadius:8, padding:'10px 16px', marginBottom:14, fontSize:12, color:'#14532d', display:'flex', alignItems:'center', gap:8 }}>
-              🔌 <strong>Live GCP data</strong> — costs and instances fetched from Google Cloud APIs.
+              <strong>Live GCP data</strong> — costs and instances fetched from Google Cloud APIs.
             </div>
           )}
           {mode === 'real' && !connections.gcp?.connected && (
             <div style={{ background:'#fff8ed', border:'1px solid #f97316', borderRadius:8, padding:'10px 16px', marginBottom:14, fontSize:12, color:'#92400e', display:'flex', alignItems:'center', gap:8 }}>
-              ⚠️ Showing estimated data. <strong>Connect your GCP account</strong> to see real Compute Engine instance counts and BigQuery usage.
+              Showing estimated data. <strong>Connect your GCP account</strong> to see real Compute Engine instance counts and BigQuery usage.
               <button onClick={() => setModalOpen(true)} style={{ marginLeft:'auto', padding:'4px 12px', border:'1px solid #f97316', borderRadius:6, background:'#fff8ed', color:'#f97316', cursor:'pointer', fontWeight:600, fontSize:11 }}>
                 Connect GCP →
               </button>
@@ -518,11 +522,11 @@ export default function App() {
             <>
               <div className="two-col">
                 <div className="section-card">
-                  <div className="section-title">📈 GCP — 14-day spend{gcpIsEstimated && <span style={{marginLeft:6,fontSize:10,color:'#94a3b8'}}>(estimated)</span>}</div>
+                  <div className="section-title">GCP — 14-day spend{gcpIsEstimated && <span style={{marginLeft:6,fontSize:10,color:'#94a3b8'}}>(estimated)</span>}</div>
                   <ProviderBarChart data={providers.gcp?.daily} color="#4285F4" label="GCP Daily Cost" />
                 </div>
                 <div className="section-card">
-                  <div className="section-title">⚙️ Resource utilization</div>
+                  <div className="section-title">Resource utilization</div>
                   <UtilizationBars provider="gcp" utilization={providers.gcp?.utilization} />
                 </div>
               </div>
@@ -540,12 +544,12 @@ export default function App() {
         <>
           {mode === 'real' && connections.azure?.connected && (
             <div style={{ background:'#f0fdf4', border:'1px solid #86efac', borderRadius:8, padding:'10px 16px', marginBottom:14, fontSize:12, color:'#14532d', display:'flex', alignItems:'center', gap:8 }}>
-              🔌 <strong>Live Azure data</strong> — costs and VMs fetched directly from Azure Cost Management API.
+              <strong>Live Azure data</strong> — costs and VMs fetched directly from Azure Cost Management API.
             </div>
           )}
           {mode === 'real' && !connections.azure?.connected && (
             <div style={{ background:'#fff8ed', border:'1px solid #f97316', borderRadius:8, padding:'10px 16px', marginBottom:14, fontSize:12, color:'#92400e', display:'flex', alignItems:'center', gap:8 }}>
-              ⚠️ Showing estimated data. <strong>Connect your Azure account</strong> to see real VM counts, actual costs, and live spend trends.
+              Showing estimated data. <strong>Connect your Azure account</strong> to see real VM counts, actual costs, and live spend trends.
               <button onClick={() => setModalOpen(true)} style={{ marginLeft:'auto', padding:'4px 12px', border:'1px solid #f97316', borderRadius:6, background:'#fff8ed', color:'#f97316', cursor:'pointer', fontWeight:600, fontSize:11 }}>
                 Connect Azure →
               </button>
@@ -565,11 +569,11 @@ export default function App() {
             <>
               <div className="two-col">
                 <div className="section-card">
-                  <div className="section-title">📊 Azure — resource cost breakdown</div>
+                  <div className="section-title">Azure — resource cost breakdown</div>
                   <AzureHorizontalChart services={providers.azure?.services} />
                 </div>
                 <div className="section-card">
-                  <div className="section-title">⚙️ Resource utilization</div>
+                  <div className="section-title">Resource utilization</div>
                   <UtilizationBars provider="azure" utilization={providers.azure?.utilization} />
                 </div>
               </div>
@@ -587,7 +591,7 @@ export default function App() {
         <div>
           {/* Cost Comparison Section */}
           <div className="section-card">
-            <div className="section-title">⚖️ Multi-Cloud Cost Comparison</div>
+            <div className="section-title">Multi-Cloud Cost Comparison</div>
             <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 4, marginBottom: 16 }}>
               Side-by-side provider breakdown, budget tracking, savings recommendations, performance radar, and full cross-service cost table.
             </div>
@@ -596,7 +600,7 @@ export default function App() {
 
           {/* Cross-Cloud FinOps Analysis Section */}
           <div className="section-card" style={{ marginTop: 14 }}>
-            <div className="section-title">🧭 Cross-Cloud FinOps Analysis</div>
+            <div className="section-title">Cross-Cloud FinOps Analysis</div>
             <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 6 }}>
               Shows connected cloud services (best-effort), per-day and per-month cost estimates, plus actionable tips.
             </div>
@@ -612,7 +616,7 @@ export default function App() {
         <>
           <MetricRow metrics={forecastMetrics} />
           <div className="section-card">
-            <div className="section-title">📈 90-day history + 30-day ensemble forecast</div>
+            <div className="section-title">90-day history + 30-day forecast</div>
             <ForecastPanelV2 forecast={forecast} loading={loading} />
           </div>
         </>
@@ -621,7 +625,7 @@ export default function App() {
       {/* ── INVOICES ── */}
       {tab === 'invoices' && (
         <div className="section-card">
-          <div className="section-title">🧾 Cloud Provider Invoices</div>
+          <div className="section-title">Cloud Provider Invoices</div>
           <InvoicePanel mode={mode} />
         </div>
       )}
@@ -629,7 +633,7 @@ export default function App() {
       {/* ── ALERTS ── */}
       {tab === 'alerts' && (
         <div className="section-card">
-          <div className="section-title">⚠️ Active anomalies &amp; alerts</div>
+          <div className="section-title">Active anomalies &amp; alerts</div>
           <AlertList alerts={managedAlerts} onAcknowledge={handleAcknowledge} />
         </div>
       )}

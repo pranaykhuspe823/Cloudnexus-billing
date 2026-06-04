@@ -91,7 +91,7 @@ export default function ServiceListWithRegion({ provider, services }) {
       {/* Region Filter Bar */}
       {regions.length > 0 && (
         <div className="region-bar">
-          <span className="region-bar-label">📍 Region</span>
+          <span className="region-bar-label">Region</span>
           <button
             className={`region-btn ${!activeRegion ? 'active' : ''}`}
             style={!activeRegion ? { borderColor: meta.color, color: meta.color, background: `${meta.color}12` } : {}}

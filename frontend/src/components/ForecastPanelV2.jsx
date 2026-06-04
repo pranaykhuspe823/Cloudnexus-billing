@@ -11,9 +11,9 @@ function ThinkingDots() {
 
 function RiskBadge({ level }) {
   const map = {
-    low:    { bg: '#dcfce7', color: '#16a34a', label: '✓ Low Risk'    },
-    medium: { bg: '#fef9c3', color: '#ca8a04', label: '⚡ Medium Risk' },
-    high:   { bg: '#fee2e2', color: '#dc2626', label: '⚠ High Risk'   },
+    low:    { bg: '#dcfce7', color: '#16a34a', label: 'Low Risk'    },
+    medium: { bg: '#fef9c3', color: '#ca8a04', label: 'Medium Risk' },
+    high:   { bg: '#fee2e2', color: '#dc2626', label: 'High Risk'   },
   };
   const s = map[level] || map.medium;
   return (
@@ -206,13 +206,13 @@ export default function ForecastPanelV2({ forecast, loading }) {
           {forecast.seasonal_insight && (
             <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 8,
                           padding: '8px 10px', fontSize: 11, color: '#14532d' }}>
-              <span style={{ fontWeight: 700 }}>📅 Seasonal:</span> {forecast.seasonal_insight}
+              <span style={{ fontWeight: 700 }}>Seasonal:</span> {forecast.seasonal_insight}
             </div>
           )}
           {forecast.top_recommendation && (
             <div style={{ background: '#fefce8', border: '1px solid #fde68a', borderRadius: 8,
                           padding: '8px 10px', fontSize: 11, color: '#713f12' }}>
-              <span style={{ fontWeight: 700 }}>💡 Action:</span> {forecast.top_recommendation}
+              <span style={{ fontWeight: 700 }}>Action:</span> {forecast.top_recommendation}
             </div>
           )}
         </div>

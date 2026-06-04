@@ -249,7 +249,7 @@ function CrossServiceTable({ rows, isLive }) {
       {isLive && (
         <div style={{ marginBottom: 10, display:'flex', alignItems:'center', gap:6, fontSize:11 }}>
           <span style={{ background:'#22c55e22', color:'#22c55e', padding:'2px 8px', borderRadius:99, fontWeight:700 }}>
-            🔌 LIVE SERVICE NAMES
+            LIVE SERVICE NAMES
           </span>
           <span style={{ color:'#64748b' }}>Names fetched directly from your cloud platform accounts</span>
         </div>
@@ -284,7 +284,7 @@ function CrossServiceTable({ rows, isLive }) {
       </div>
       {!isLive && (
         <div style={{ marginTop: 8, fontSize: 11, color: '#94a3b8' }}>
-          ⚠️ Connect cloud accounts to see exact service names as defined in your cloud consoles.
+          Connect cloud accounts to see exact service names as defined in your cloud consoles.
         </div>
       )}
     </div>
@@ -351,21 +351,21 @@ export default function CostComparisonPanel({ mode = 'mock' }) {
 
   if (loading) return (
     <div style={{ padding: 32, textAlign: 'center', color: '#94a3b8', fontSize: 14 }}>
-      ⏳ Loading cost comparison data…
+      Loading cost comparison data…
     </div>
   );
 
   if (error) return (
-    <div className="error-banner" style={{ margin: '12px 0' }}>⚠️ {error}</div>
+    <div className="error-banner" style={{ margin: '12px 0' }}>{error}</div>
   );
 
   if (!data) return null;
 
   const SUB_TABS = [
-    { id: 'overview',    label: '📊 Overview'      },
-    { id: 'radar',       label: '🎯 Performance'    },
-    { id: 'savings',     label: '💡 Savings'        },
-    { id: 'services',    label: '⚖️ All Services'   },
+    { id: 'overview',    label: 'Overview'      },
+    { id: 'radar',       label: 'Performance'    },
+    { id: 'savings',     label: 'Savings'        },
+    { id: 'services',    label: 'All Services'   },
   ];
 
   return (
@@ -400,7 +400,7 @@ export default function CostComparisonPanel({ mode = 'mock' }) {
           onClick={load}
           style={{ marginLeft: 'auto', padding: '6px 14px', fontSize: 12, border: '1px solid #e2e8f5', borderRadius: 6, background: '#f8faff', color: '#64748b', cursor: 'pointer', fontWeight: 600 }}
         >
-          🔄 Refresh
+          Refresh
         </button>
       </div>
 
@@ -410,7 +410,7 @@ export default function CostComparisonPanel({ mode = 'mock' }) {
           <ProviderSummaryCards providers={data.providers} summary={data.summary} />
           <div style={{ marginTop: 18 }}>
             <Card>
-              <SectionTitle>⚖️ Multi-Cloud Cost Comparison — Monthly Side-by-Side</SectionTitle>
+              <SectionTitle>Multi-Cloud Cost Comparison — Monthly Side-by-Side</SectionTitle>
               <MonthlyComparisonChart data={data.monthly_comparison} />
             </Card>
           </div>
@@ -421,11 +421,11 @@ export default function CostComparisonPanel({ mode = 'mock' }) {
       {activeTab === 'radar' && (
         <div className="two-col" style={{ gap: 14 }}>
           <Card>
-            <SectionTitle>🎯 Provider Performance Radar</SectionTitle>
+            <SectionTitle>Provider Performance Radar</SectionTitle>
             <ProviderRadar data={data.radar} />
           </Card>
           <Card>
-            <SectionTitle>📊 Efficiency Scores</SectionTitle>
+            <SectionTitle>Efficiency Scores</SectionTitle>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 18, marginTop: 8 }}>
               {['aws', 'gcp', 'azure'].map(p => {
                 const info = data.providers[p] || {};
@@ -453,7 +453,7 @@ export default function CostComparisonPanel({ mode = 'mock' }) {
       {/* Savings Recommendations */}
       {activeTab === 'savings' && (
         <Card>
-          <SectionTitle>💡 Cost Savings Recommendations</SectionTitle>
+          <SectionTitle>Cost Savings Recommendations</SectionTitle>
           <SavingsRecommendations recs={data.savings_recommendations} />
         </Card>
       )}
@@ -461,7 +461,7 @@ export default function CostComparisonPanel({ mode = 'mock' }) {
       {/* All Services — real names + specs from cloud platforms */}
       {activeTab === 'services' && (
         <Card>
-          <SectionTitle>⚖️ All Services — Real Names &amp; Specs from Cloud</SectionTitle>
+          <SectionTitle>All Services — Real Names &amp; Specs from Cloud</SectionTitle>
           <div style={{ fontSize: 12, color: '#64748b', marginBottom: 12 }}>
             Resource names are fetched exactly as you named them on each cloud platform. Click any row to see full specs.
           </div>

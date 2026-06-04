@@ -109,7 +109,7 @@ function generateInvoicePDF(inv, provider) {
         <div class="meta-label">Status</div>
         <div class="meta-val">
           <span class="status-pill">
-            ${inv.status === 'paid' ? '✓' : inv.status === 'overdue' ? '!' : '⏳'}
+            ${inv.status === 'paid' ? '✓' : inv.status === 'overdue' ? '!' : ''}
             ${inv.status.charAt(0).toUpperCase() + inv.status.slice(1)}
           </span>
           <span class="source-chip">${sourceLabel}</span>
@@ -350,7 +350,7 @@ export default function InvoicePanel({ mode }) {
                       </div>
                       <div className="invoice-amount">{fmt.usd(inv.amount)}</div>
                       <div className="inv-status-badge" style={{ background: st.bg, color: st.color, border: `0.5px solid ${st.border}` }}>
-                        {inv.status === 'paid' ? '✓ ' : inv.status === 'overdue' ? '⚠ ' : '⏳ '}
+                        {inv.status === 'paid' ? '✓ ' : inv.status === 'overdue' ? '! ' : ''}
                         {inv.status.charAt(0).toUpperCase() + inv.status.slice(1)}
                       </div>
                       {inv.source && (

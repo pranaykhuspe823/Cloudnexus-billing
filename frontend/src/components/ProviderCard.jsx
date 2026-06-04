@@ -1,5 +1,6 @@
 import React from 'react';
 import { PROVIDER_META, fmt } from '../utils/theme';
+import ProviderLogo from './ProviderLogo';
 
 export default function ProviderCard({ provider, data, selected, onClick, notConnected }) {
   const meta = PROVIDER_META[provider];
@@ -19,7 +20,7 @@ export default function ProviderCard({ provider, data, selected, onClick, notCon
       >
         <div className="p-header">
           <div className="p-logo">
-            <div className="p-icon" style={{ background: meta.bg }}>{meta.emoji}</div>
+            <div className="p-icon" style={{ background: meta.bg }}><ProviderLogo provider={provider} size={18} /></div>
             <span>{meta.label}</span>
           </div>
           <span style={{ fontSize: 10, background: '#f0f4ff', color: '#94a3b8', padding: '2px 8px', borderRadius: 99, fontWeight: 600 }}>
@@ -50,9 +51,7 @@ export default function ProviderCard({ provider, data, selected, onClick, notCon
     >
       <div className="p-header">
         <div className="p-logo">
-          <div className="p-icon" style={{ background: meta.bg }}>
-            {meta.emoji}
-          </div>
+          <div className="p-icon" style={{ background: meta.bg }}><ProviderLogo provider={provider} size={18} /></div>
           <span>{meta.label}</span>
         </div>
         <span

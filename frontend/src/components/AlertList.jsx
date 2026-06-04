@@ -320,7 +320,7 @@ export default function AlertList({ alerts = [], onAcknowledge, compact }) {
 
       {alerts.length === 0 && (
         <div style={{ textAlign: 'center', padding: '32px 0', color: 'var(--text3)', fontSize: 13 }}>
-          ✅ No alerts match the current filter.
+          No alerts match the current filter.
         </div>
       )}
 

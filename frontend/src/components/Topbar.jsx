@@ -64,8 +64,7 @@ export default function Topbar({ mode, onModeChange, onRefresh, lastRefresh, con
             <span className="brand-dot aws" />
             <span className="brand-dot gcp" />
             <span className="brand-dot azure" />
-          </span>
-          Cloud<span style={{ color: '#4285F4' }}>Nexus</span>
+          </span><span>Cloud<span style={{ color: '#4285F4' }}>Nexus</span></span>
         </span>
         <span className="live-badge"><span className="dot" />Live</span>
         <span className="muted-text">Last refresh: {timeAgo()}</span>

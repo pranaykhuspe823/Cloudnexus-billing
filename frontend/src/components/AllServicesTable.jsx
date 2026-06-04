@@ -142,10 +142,10 @@ export default function AllServicesTable({ mode = 'mock' }) {
 
   if (loading) return (
     <div style={{ padding: '28px 0', textAlign: 'center', color: '#94a3b8', fontSize: 13 }}>
-      ⏳ Fetching resources and names from cloud platforms…
+      Fetching resources and names from cloud platforms…
     </div>
   );
-  if (error)   return <div style={{ color: '#ef4444', fontSize: 13, padding: 8 }}>⚠️ {error}</div>;
+  if (error)   return <div style={{ color: '#ef4444', fontSize: 13, padding: 8 }}>{error}</div>;
   if (!data)   return null;
 
   const resources = data.resources || [];
@@ -170,11 +170,11 @@ export default function AllServicesTable({ mode = 'mock' }) {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center', marginBottom: 14 }}>
         {isLive ? (
           <span style={{ background: '#22c55e22', color: '#22c55e', padding: '3px 10px', borderRadius: 99, fontSize: 11, fontWeight: 700 }}>
-            🔌 LIVE — names fetched from your cloud accounts
+            LIVE — names fetched from your cloud accounts
           </span>
         ) : (
           <span style={{ background: '#f97316' + '22', color: '#f97316', padding: '3px 10px', borderRadius: 99, fontSize: 11, fontWeight: 700 }}>
-            ⚠️ ESTIMATED — connect cloud accounts for real resource names
+            ESTIMATED — connect cloud accounts for real resource names
           </span>
         )}
 
@@ -205,7 +205,7 @@ export default function AllServicesTable({ mode = 'mock' }) {
         </select>
 
         <button onClick={load} style={{ padding: '5px 12px', border: '1px solid #e2e8f5', borderRadius: 6, background: '#f8faff', color: '#64748b', cursor: 'pointer', fontSize: 12, fontWeight: 600 }}>
-          🔄
+          Refresh
         </button>
       </div>
 
